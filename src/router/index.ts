@@ -17,7 +17,7 @@ const router = createRouter({
     {
       path:'/historial',
       name:'history',
-      component:()=>import('@/views/POSView.vue'),
+      component:()=>import('@/views/SalesHistoryView.vue'),
     }
   ],
 })
