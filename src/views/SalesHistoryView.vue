@@ -25,7 +25,7 @@ function formatTime(date: Date | string) {
 
         <div class="summary-bar">
             <div class="stat-card">
-                <span>Ventas Totales</span>
+                <span>Ventas Totales </span>
                 <strong>S/ {{ saleHistoryStore.totalSalesToday.toFixed(2) }}</strong>
             </div>
         </div>
