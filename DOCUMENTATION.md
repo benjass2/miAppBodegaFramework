@@ -1,0 +1,1 @@
+src/types/ -> Creamos los contratos de ty para asegurar que toda la app hable el mismo idioma de datos
