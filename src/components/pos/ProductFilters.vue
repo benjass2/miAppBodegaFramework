@@ -1,20 +1,12 @@
 <script setup lang="ts">
 import { useProductStore, type SortOption } from '@/stores/useProductStore';
-import type { ProductCategory } from '@/types';
+import { PRODUCT_CATEGORY_FILTER_OPTIONS } from '@/domain/categories';
 
 import { Search, Tags, ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-vue-next';
 
 const productStore = useProductStore();
 
-const categories: (ProductCategory | 'Todas')[] = [
-  'Todas',
-  'Abarrotes',
-  'Bebidas',
-  'Lácteos',
-  'Snacks',
-  'Limpieza',
-  'Otros',
-];
+const categories = PRODUCT_CATEGORY_FILTER_OPTIONS;
 
 const sortOptions: { label: string; value: SortOption }[] = [
   { label: 'Nombre', value: 'name' },

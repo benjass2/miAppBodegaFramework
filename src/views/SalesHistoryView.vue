@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useSaleHistoryStore } from '@/stores/useSaleHistoryStore';
+import { formatCurrency } from '@/utils/currency';
 
 const saleHistoryStore = useSaleHistoryStore();
 const selectedMethod = ref<string>('todos');
@@ -26,7 +27,7 @@ function formatTime(date: Date | string) {
         <div class="summary-bar">
             <div class="stat-card">
                 <span>Ventas Totales </span>
-                <strong>S/ {{ saleHistoryStore.totalSalesToday.toFixed(2) }}</strong>
+                <strong>{{ formatCurrency(saleHistoryStore.totalSalesToday) }}</strong>
             </div>
         </div>
 
@@ -53,11 +54,11 @@ function formatTime(date: Date | string) {
                 <div class="sale-details">
                     <div v-for="item in sale.items" :key="item.product.id" class="item-line">
                         <span>{{ item.quantity }}x {{ item.product.name }}</span>
-                        <span>S/ {{ item.subtotal.toFixed(2) }}</span>
+                        <span>{{ formatCurrency(item.subtotal) }}</span>
                     </div>
                 </div>
                 <div class="sale-footer">
-                    <strong>Total: S/ {{ sale.total.toFixed(2) }}</strong>
+                    <strong>Total: {{ formatCurrency(sale.total) }}</strong>
                 </div>
             </div>
         </div>

@@ -1,24 +1,22 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import type { Product, ProductCategory } from '@/types/products';
+import type { Product } from '@/types/products';
+import { PRODUCT_CATEGORIES } from '@/domain/categories';
 
 const props = defineProps<{
     isOpen: boolean;
     productToEdit?: Product | null;
 }>();
 
+// Emits tipados con unión discriminada: el padre ya no necesita
+// adivinar si es alta o edición inspeccionando `'id' in productData`.
 const emit = defineEmits<{
     (e: 'close'): void;
-    (e: 'save', product: Omit<Product, 'id'> | Product): void;
+    (e: 'create', product: Omit<Product, 'id'>): void;
+    (e: 'update', product: Product): void;
 }>();
 
-const categories: ProductCategory[] = [
-    'Abarrotes',
-    'Bebidas',
-    'Lácteos',
-    'Snacks',
-    'Limpieza',
-];
+const categories = PRODUCT_CATEGORIES;
 
 const formData = ref<Omit<Product, 'id'>>({
     name: '',
@@ -57,9 +55,9 @@ function handleSubmit() {
     }
 
     if (props.productToEdit) {
-        emit('save', { ...formData.value, id: props.productToEdit.id });
+        emit('update', { ...formData.value, id: props.productToEdit.id });
     } else {
-        emit('save', formData.value);
+        emit('create', formData.value);
     }
 
     emit('close');

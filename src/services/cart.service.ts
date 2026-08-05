@@ -1,8 +1,9 @@
 import type { SaleItem, Product } from '@/types';
+import { roundCurrency } from '@/utils/currency';
 
 export class CartService {
   static round(num: number): number {
-    return Number(num.toFixed(2));
+    return roundCurrency(num);
   }
 
   static calculateSubtotal(price: number, quantity: number): number {

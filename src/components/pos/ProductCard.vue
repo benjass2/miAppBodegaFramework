@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Product } from '@/types/products';
-import { categoryColors } from '@/assets/utils/CategoryColor';
+import { categoryColors } from '@/domain/categories';
 defineProps<{ product: Product; }>();
 
 const emit = defineEmits<{

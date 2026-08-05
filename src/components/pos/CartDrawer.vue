@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { useCartStore } from '@/stores/useCartStore';
 import CheckoutModal from './CheckoutModal.vue';
 import { Trash } from 'lucide-vue-next';
+import { formatCurrency } from '@/utils/currency';
 
 const cartStore = useCartStore();
 const isExpanded = ref(false);
@@ -22,7 +23,7 @@ const showCheckout = ref(false);
       </div>
 
       <div class="cart-total-action">
-        <span class="total-price">S/ {{ cartStore.totalAmount.toFixed(2) }}</span>
+        <span class="total-price">{{ formatCurrency(cartStore.totalAmount) }}</span>
         <button class="btn-checkout" @click="showCheckout = true">
           Cobrar
         </button>
@@ -34,7 +35,7 @@ const showCheckout = ref(false);
       <div v-for="item in cartStore.activeItems" :key="item.product.id" class="detail-row">
         <div class="product-info">
           <span class="p-name">{{ item.product.name }}</span>
-          <span class="p-unit">S/ {{ item.product.price.toFixed(2) }} c/u</span>
+          <span class="p-unit">{{ formatCurrency(item.product.price) }} c/u</span>
         </div>
 
         <div class="controls-and-subtotal">
@@ -43,7 +44,7 @@ const showCheckout = ref(false);
             <span>{{ item.quantity }}</span>
             <button @click="cartStore.addProduct(item.product)">+</button>
           </div>
-          <span class="subtotal">S/ {{ item.subtotal.toFixed(2) }}</span>
+          <span class="subtotal">{{ formatCurrency(item.subtotal) }}</span>
         </div>
       </div>
 

@@ -3,9 +3,10 @@ import { onMounted } from 'vue';
 import { useCartStore } from '@/stores/useCartStore';
 import { useSaleCheckout } from '@/composables/useSaleCheckout';
 import type { PaymentMethod } from '@/types';
+import { formatCurrency } from '@/utils/currency';
 
 const cartStore = useCartStore();
-const { canConfirmSale, confirmSale } = useSaleCheckout();
+const { canConfirmSale, hasStockForAllItems, confirmSale } = useSaleCheckout();
 
 const emit = defineEmits<{
   (e: 'close'): void;
@@ -28,7 +29,7 @@ function handleConfirmSale() {
   const sale = confirmSale();
   if (!sale) return;
 
-  alert(`✅ Venta registrada con éxito.\nVuelto: S/ ${sale.change.toFixed(2)}`);
+  alert(`✅ Venta registrada con éxito.\nVuelto: ${formatCurrency(sale.change)}`);
   emit('success');
 }
 </script>
@@ -45,7 +46,7 @@ function handleConfirmSale() {
         <!-- Total a pagar -->
         <div class="total-display">
           <span class="label">Total a Cobrar</span>
-          <span class="amount">S/ {{ cartStore.totalAmount.toFixed(2) }}</span>
+          <span class="amount">{{ formatCurrency(cartStore.totalAmount) }}</span>
         </div>
 
         <!-- Método de Pago -->
@@ -89,13 +90,16 @@ function handleConfirmSale() {
           <!-- Display de Vuelto -->
           <div class="change-display" :class="{ 'has-change': cartStore.change > 0 }">
             <span>Vuelto a entregar:</span>
-            <strong>S/ {{ cartStore.change.toFixed(2) }}</strong>
+            <strong>{{ formatCurrency(cartStore.change) }}</strong>
           </div>
         </div>
       </div>
 
       <!-- Acciones finales -->
       <footer class="modal-footer">
+        <p v-if="!hasStockForAllItems" class="stock-warning">
+          ⚠️ Uno o más productos no tienen stock suficiente.
+        </p>
         <button class="btn-confirm" :disabled="!canConfirmSale" @click="handleConfirmSale">
           Confirmar Venta
         </button>
@@ -249,6 +253,14 @@ function handleConfirmSale() {
 .change-display.has-change {
   background: #fef3c7;
   color: #92400e;
+}
+
+.stock-warning {
+  margin: 0 0 10px;
+  color: #b91c1c;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
 }
 
 .btn-confirm {

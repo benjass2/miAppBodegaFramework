@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import { useProductStore } from '@/stores/useProductStore';
 import type { Product } from '@/types';
 import ProductFormModal from '@/components/admin/ProductFormModal.vue';
+import { formatCurrency } from '@/utils/currency';
 import {
   Search,
   Plus,
@@ -34,26 +35,17 @@ function openEditModal(product: Product) {
   isModalOpen.value = true;
 }
 
-function handleSaveProduct(productData: any) {
-  if ('id' in productData) {
-    // Si viene con ID, actualizamos el producto completo
-    if (productStore.updateProduct) {
-      productStore.updateProduct(productData);
-    } else {
-      // Fallback si solo tenías updateProductPrice
-      productStore.updateProductPrice(productData.id, productData.price);
-    }
-  } else {
-    // Si no tiene ID, creamos un nuevo producto
-    productStore.addProduct(productData);
-  }
+async function handleCreateProduct(productData: Omit<Product, 'id'>) {
+  await productStore.addProduct(productData);
 }
 
-function handleDeleteProduct(product: Product) {
+async function handleUpdateProduct(productData: Product) {
+  await productStore.updateProduct(productData);
+}
+
+async function handleDeleteProduct(product: Product) {
   if (confirm(`¿Estás seguro de eliminar "${product.name}"?`)) {
-    if (productStore.deleteProduct) {
-      productStore.deleteProduct(product.id);
-    }
+    await productStore.deleteProduct(product.id);
   }
 }
 </script>
@@ -67,6 +59,10 @@ function handleDeleteProduct(product: Product) {
         <span>Nuevo Producto</span>
       </button>
     </header>
+
+    <p v-if="productStore.errorMessage" class="error-banner">
+      ⚠️ {{ productStore.errorMessage }}
+    </p>
 
     <!-- Buscador -->
     <div class="search-box">
@@ -93,7 +89,7 @@ function handleDeleteProduct(product: Product) {
         </div>
 
         <div class="action-box">
-          <span class="current-price">S/ {{ product.price.toFixed(2) }}</span>
+          <span class="current-price">{{ formatCurrency(product.price) }}</span>
           <div class="button-group">
             <button class="btn-action btn-edit" title="Editar producto" @click="openEditModal(product)">
               <Pencil :size="18" />
@@ -108,7 +104,7 @@ function handleDeleteProduct(product: Product) {
 
     <!-- Modal Formulario (Separado en su propio componente) -->
     <ProductFormModal :is-open="isModalOpen" :product-to-edit="editingProduct" @close="isModalOpen = false"
-      @save="handleSaveProduct" />
+      @create="handleCreateProduct" @update="handleUpdateProduct" />
   </div>
 </template>
 
@@ -152,6 +148,17 @@ function handleDeleteProduct(product: Product) {
 }
 
 .search-box {
+  margin-bottom: 16px;
+}
+
+.error-banner {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
   margin-bottom: 16px;
 }
 

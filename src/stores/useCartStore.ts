@@ -27,12 +27,16 @@ export const useCartStore = defineStore('cart', () => {
 
   function updateQuantity(productId: string, quantity: number) {
     if (quantity <= 0) return removeProduct(productId);
-    
-    const item = activeItems.value.find((i) => i.product.id === productId);
-    if (item) {
-      item.quantity = quantity;
-      item.subtotal = CartService.calculateSubtotal(item.product.price, quantity);
-    }
+
+    activeItems.value = activeItems.value.map((item) =>
+      item.product.id === productId
+        ? {
+            ...item,
+            quantity,
+            subtotal: CartService.calculateSubtotal(item.product.price, quantity),
+          }
+        : item
+    );
   }
 
   function removeProduct(productId: string) {
