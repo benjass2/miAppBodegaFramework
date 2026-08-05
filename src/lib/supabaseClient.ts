@@ -2,13 +2,6 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 let client: SupabaseClient | null = null;
 
-/**
- * Perezoso a propósito: si esto validara las env vars al importar el
- * archivo, cualquier persona corriendo en modo "mock" (sin llaves de
- * Supabase todavía) rompería la app entera solo por el import,
- * aunque nunca fuera a usar Supabase. Se valida recién cuando
- * SupabaseProductRepository efectivamente llama a un método.
- */
 export function getSupabaseClient(): SupabaseClient {
   if (client) return client;
 
